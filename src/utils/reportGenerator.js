@@ -2,7 +2,35 @@ import { calculateMetrics } from '../data/motionData.js'
 
 export function generateReport(dataset, keyframes, selection) {
   const metrics = calculateMetrics(dataset)
-  const selectedFrames = dataset.frames.slice(selection.start, selection.end + 1)
+  const maxFrame = dataset.frames.length - 1
+  const MIN_SELECTION_WIDTH = 5
+
+  let s = selection?.start ?? 0
+  let e = selection?.end ?? maxFrame
+
+  if (s > e) {
+    ;[s, e] = [e, s]
+  }
+
+  s = Math.max(0, Math.min(Math.round(s), maxFrame))
+  e = Math.max(0, Math.min(Math.round(e), maxFrame))
+
+  if (e - s < MIN_SELECTION_WIDTH) {
+    if (s <= maxFrame - MIN_SELECTION_WIDTH) {
+      e = s + MIN_SELECTION_WIDTH
+    } else {
+      s = Math.max(0, maxFrame - MIN_SELECTION_WIDTH)
+      e = maxFrame
+    }
+  }
+
+  s = Math.max(0, Math.min(s, maxFrame))
+  e = Math.max(0, Math.min(e, maxFrame))
+  if (s > e) {
+    ;[s, e] = [e, s]
+  }
+
+  const selectedFrames = dataset.frames.slice(s, e + 1)
   
   const report = {
     title: '运动捕捉数据分析报告',
@@ -13,11 +41,11 @@ export function generateReport(dataset, keyframes, selection) {
     duration: dataset.frames[dataset.frames.length - 1].time,
     
     selection: {
-      startFrame: selection.start,
-      endFrame: selection.end,
-      startTime: dataset.frames[selection.start]?.time || 0,
-      endTime: dataset.frames[selection.end]?.time || 0,
-      duration: (dataset.frames[selection.end]?.time || 0) - (dataset.frames[selection.start]?.time || 0)
+      startFrame: s,
+      endFrame: e,
+      startTime: dataset.frames[s]?.time || 0,
+      endTime: dataset.frames[e]?.time || 0,
+      duration: Math.max(0, (dataset.frames[e]?.time || 0) - (dataset.frames[s]?.time || 0))
     },
     
     overallMetrics: metrics,

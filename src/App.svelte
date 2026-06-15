@@ -19,7 +19,17 @@
   let showTrail = true
   let compareMode = false
   
-  let selection = { start: 0, end: 100 }
+  const SHORT_SAMPLE_THRESHOLD = 20
+
+  function adaptSelectionToDataset(dataset) {
+    const maxFrame = dataset.frames.length - 1
+    if (dataset.frames.length < SHORT_SAMPLE_THRESHOLD) {
+      return { start: 0, end: maxFrame }
+    }
+    return { start: 0, end: Math.min(100, maxFrame) }
+  }
+
+  let selection = adaptSelectionToDataset(athleteAData)
   let keyframes = [
     { frame: 40, time: 40/60, label: '助跑中期', color: '#60a5fa' },
     { frame: 72, time: 72/60, label: '起跳瞬间', color: '#f59e0b' },
@@ -133,7 +143,7 @@
 
   function handleResetView() {
     currentFrame = 0
-    selection = { start: 0, end: 100 }
+    selection = adaptSelectionToDataset(currentDataset)
     selectedJoint = null
   }
 
@@ -141,7 +151,7 @@
     currentDataset = dataset
     currentFrame = 0
     metrics = calculateMetrics(dataset)
-    selection = { start: 0, end: Math.min(100, dataset.frames.length - 1) }
+    selection = adaptSelectionToDataset(dataset)
   }
 
   onMount(() => {
@@ -160,6 +170,7 @@
     document.addEventListener('resetView', handleResetView)
     document.addEventListener('goToKeyframe', handleGoToKeyframe)
     document.addEventListener('keyframesChange', handleKeyframesChange)
+    document.addEventListener('selectionChange', handleSelectionChange)
   })
 
   onDestroy(() => {
@@ -175,6 +186,7 @@
     document.removeEventListener('resetView', handleResetView)
     document.removeEventListener('goToKeyframe', handleGoToKeyframe)
     document.removeEventListener('keyframesChange', handleKeyframesChange)
+    document.removeEventListener('selectionChange', handleSelectionChange)
   })
 
   afterUpdate(() => {
