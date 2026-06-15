@@ -56,8 +56,8 @@ function generateJumpMotion(baseOffset = 0, variation = 0) {
 
     const runBob = runPhase ? Math.sin(t * Math.PI * 8) * 0.05 : 0
 
-    const hipY = 0.9 + baseY + runBob + variation * 0.05
-    const hipX = runX + Math.sin(t * Math.PI * 6) * 0.02 + baseOffset * 0.1
+    const hipY = 0.9 + baseY + runBob + variation * 0.15
+    const hipX = runX + Math.sin(t * Math.PI * 6) * 0.05 + baseOffset
 
     frame.joints.torso = { x: hipX, y: hipY + 0.3, z: 0 + Math.sin(t * 2) * 0.05 }
     frame.joints.neck = { x: hipX, y: hipY + 0.7, z: 0 + Math.sin(t * 2 + 0.5) * 0.03 }
@@ -65,82 +65,82 @@ function generateJumpMotion(baseOffset = 0, variation = 0) {
 
     const armSwing = runPhase ? Math.sin(t * Math.PI * 8) * 0.4 : (takeoffPhase ? -0.3 + (t - 0.4) / 0.15 * 0.8 : (airPhase ? 0.6 - (t - 0.55) / 0.25 * 0.2 : 0.3 - (t - 0.8) / 0.2 * 0.3))
 
-    frame.joints.l_shoulder = { x: hipX - 0.15, y: hipY + 0.65, z: 0.2 }
-    frame.joints.r_shoulder = { x: hipX + 0.15, y: hipY + 0.65, z: -0.2 }
+    frame.joints.l_shoulder = { x: hipX - 0.2, y: hipY + 0.65, z: 0.25 }
+    frame.joints.r_shoulder = { x: hipX + 0.2, y: hipY + 0.65, z: -0.25 }
 
     frame.joints.l_elbow = {
-      x: hipX - 0.15 + Math.sin(armSwing) * 0.3,
-      y: hipY + 0.45 + Math.cos(armSwing) * 0.1,
-      z: 0.3 + Math.sin(armSwing) * 0.1
+      x: hipX - 0.2 + Math.sin(armSwing) * 0.45,
+      y: hipY + 0.45 + Math.cos(armSwing) * 0.15,
+      z: 0.35 + Math.sin(armSwing) * 0.15
     }
     frame.joints.r_elbow = {
-      x: hipX + 0.15 - Math.sin(armSwing + Math.PI) * 0.3,
-      y: hipY + 0.45 + Math.cos(armSwing + Math.PI) * 0.1,
-      z: -0.3 - Math.sin(armSwing + Math.PI) * 0.1
+      x: hipX + 0.2 - Math.sin(armSwing + Math.PI) * 0.45,
+      y: hipY + 0.45 + Math.cos(armSwing + Math.PI) * 0.15,
+      z: -0.35 - Math.sin(armSwing + Math.PI) * 0.15
     }
 
-    const handExtend = airPhase ? 0.3 + (t - 0.55) / 0.25 * 0.2 : 0.3
+    const handExtend = airPhase ? 0.35 + (t - 0.55) / 0.25 * 0.25 : 0.35
     frame.joints.l_hand = {
       x: frame.joints.l_elbow.x + Math.sin(armSwing + 0.3) * handExtend,
-      y: frame.joints.l_elbow.y - 0.15 + Math.cos(armSwing + 0.3) * 0.1,
-      z: frame.joints.l_elbow.z + 0.15
+      y: frame.joints.l_elbow.y - 0.15 + Math.cos(armSwing + 0.3) * 0.15,
+      z: frame.joints.l_elbow.z + 0.18
     }
     frame.joints.r_hand = {
       x: frame.joints.r_elbow.x - Math.sin(armSwing + Math.PI - 0.3) * handExtend,
-      y: frame.joints.r_elbow.y - 0.15 + Math.cos(armSwing + Math.PI - 0.3) * 0.1,
-      z: frame.joints.r_elbow.z - 0.15
+      y: frame.joints.r_elbow.y - 0.15 + Math.cos(armSwing + Math.PI - 0.3) * 0.15,
+      z: frame.joints.r_elbow.z - 0.18
     }
 
-    frame.joints.l_hip = { x: hipX - 0.12, y: hipY, z: 0.15 }
-    frame.joints.r_hip = { x: hipX + 0.12, y: hipY, z: -0.15 }
+    frame.joints.l_hip = { x: hipX - 0.18, y: hipY, z: 0.2 }
+    frame.joints.r_hip = { x: hipX + 0.18, y: hipY, z: -0.2 }
 
     const legSwing = runPhase ? Math.sin(t * Math.PI * 8) * 0.5 : (takeoffPhase ? 0.2 - (t - 0.4) / 0.15 * 0.6 : (airPhase ? -0.6 + (t - 0.55) / 0.25 * 0.3 : -0.2 + (t - 0.8) / 0.2 * 0.4))
 
     const kneeBend = takeoffPhase ? 0.3 + (t - 0.4) / 0.15 * 0.4 : (landingPhase ? 0.2 + (t - 0.8) / 0.2 * 0.5 : 0.15)
 
     frame.joints.l_knee = {
-      x: hipX - 0.12 + Math.sin(legSwing) * 0.3,
+      x: hipX - 0.18 + Math.sin(legSwing) * 0.45,
       y: hipY - 0.45 + Math.cos(legSwing) * kneeBend - 0.1,
-      z: 0.15 + Math.sin(legSwing) * 0.05
+      z: 0.2 + Math.sin(legSwing) * 0.08
     }
     frame.joints.r_knee = {
-      x: hipX + 0.12 + Math.sin(legSwing + Math.PI) * 0.3,
+      x: hipX + 0.18 + Math.sin(legSwing + Math.PI) * 0.45,
       y: hipY - 0.45 + Math.cos(legSwing + Math.PI) * kneeBend - 0.1,
-      z: -0.15 + Math.sin(legSwing + Math.PI) * 0.05
+      z: -0.2 + Math.sin(legSwing + Math.PI) * 0.08
     }
 
     const footLift = takeoffPhase ? (t - 0.4) / 0.15 * 0.2 : (airPhase ? 0.2 + (t - 0.55) / 0.25 * 0.15 : Math.max(0, 0.35 - (t - 0.8) / 0.2 * 0.35))
 
     frame.joints.l_ankle = {
-      x: frame.joints.l_knee.x + Math.sin(legSwing - 0.2) * 0.35,
+      x: frame.joints.l_knee.x + Math.sin(legSwing - 0.2) * 0.5,
       y: Math.max(footLift, frame.joints.l_knee.y - 0.4 + footLift * 0.5),
-      z: frame.joints.l_knee.z + 0.05
+      z: frame.joints.l_knee.z + 0.08
     }
     frame.joints.r_ankle = {
-      x: frame.joints.r_knee.x + Math.sin(legSwing + Math.PI - 0.2) * 0.35,
+      x: frame.joints.r_knee.x + Math.sin(legSwing + Math.PI - 0.2) * 0.5,
       y: Math.max(footLift, frame.joints.r_knee.y - 0.4 + footLift * 0.5),
-      z: frame.joints.r_knee.z - 0.05
+      z: frame.joints.r_knee.z - 0.08
     }
 
     frame.joints.l_foot = {
-      x: frame.joints.l_ankle.x + 0.1,
+      x: frame.joints.l_ankle.x + 0.15,
       y: frame.joints.l_ankle.y - 0.02,
-      z: frame.joints.l_ankle.z + 0.08
+      z: frame.joints.l_ankle.z + 0.1
     }
     frame.joints.r_foot = {
-      x: frame.joints.r_ankle.x + 0.1,
+      x: frame.joints.r_ankle.x + 0.15,
       y: frame.joints.r_ankle.y - 0.02,
-      z: frame.joints.r_ankle.z - 0.08
+      z: frame.joints.r_ankle.z - 0.1
     }
 
-    frame.velocity = runPhase ? 6 + Math.sin(t * Math.PI * 4) * 1 : (takeoffPhase ? 8 - (t - 0.4) / 0.15 * 3 : (airPhase ? 4 - (t - 0.55) / 0.25 * 2 : 2 + (t - 0.8) / 0.2 * 1))
-    frame.verticalVelocity = takeoffPhase ? (t - 0.4) / 0.15 * 5 : (airPhase ? 5 - (t - 0.55) / 0.25 * 9 : -4 + (t - 0.8) / 0.2 * 4)
-    frame.jumpHeight = Math.max(0, baseY)
+    frame.velocity = runPhase ? (6 + variation * 1.5) + Math.sin(t * Math.PI * 4) * 1 : (takeoffPhase ? (8 + variation * 1.5) - (t - 0.4) / 0.15 * 3 : (airPhase ? (4 + variation) - (t - 0.55) / 0.25 * 2 : (2 + variation * 0.5) + (t - 0.8) / 0.2 * 1))
+    frame.verticalVelocity = takeoffPhase ? (t - 0.4) / 0.15 * (5 + variation * 1.5) : (airPhase ? (5 + variation * 1.5) - (t - 0.55) / 0.25 * (9 + variation) : -(4 + variation) + (t - 0.8) / 0.2 * 4)
+    frame.jumpHeight = Math.max(0, baseY + variation * 0.2)
     frame.leftFootPressure = runPhase ? (Math.sin(t * Math.PI * 8) > 0 ? 0.8 : 0.2) : (takeoffPhase ? 0.9 - (t - 0.4) / 0.15 * 0.9 : (airPhase ? 0 : Math.min(1, (t - 0.8) / 0.1 * 1.5)))
     frame.rightFootPressure = runPhase ? (Math.sin(t * Math.PI * 8 + Math.PI) > 0 ? 0.8 : 0.2) : (takeoffPhase ? 0.9 - (t - 0.4) / 0.15 * 0.9 : (airPhase ? 0 : Math.min(1, (t - 0.8) / 0.1 * 1.5)))
-    frame.kneeAngle = 160 - kneeBend * 100
+    frame.kneeAngle = (160 - variation * 15) - kneeBend * 100
     frame.armAngle = 90 + armSwing * 30
-    frame.torsoAngle = runPhase ? 10 + Math.sin(t * Math.PI * 4) * 2 : (takeoffPhase ? 15 : 5)
+    frame.torsoAngle = runPhase ? (10 + variation * 5) + Math.sin(t * Math.PI * 4) * 2 : (takeoffPhase ? 15 + variation * 3 : 5)
 
     frames.push(frame)
   }
@@ -159,7 +159,7 @@ export const athleteBData = {
   id: 'athlete_b',
   name: '运动员B',
   fps: 60,
-  frames: generateJumpMotion(0.5, 0.3)
+  frames: generateJumpMotion(1.5, 0.6)
 }
 
 export function getFrameData(dataset, frameIndex) {

@@ -180,7 +180,7 @@
     }
 
     if (comparisonFrame) {
-      const compG = g.append('g').attr('class', 'comparison').attr('opacity', 0.5)
+      const compG = g.append('g').attr('class', 'comparison')
       
       SKELETON_LINKS.forEach(([from, to]) => {
         const fromPos = project(comparisonFrame.joints[from])
@@ -192,18 +192,23 @@
           .attr('x2', toPos.x)
           .attr('y2', toPos.y)
           .attr('stroke', comparisonColor)
-          .attr('stroke-width', 2)
-          .attr('stroke-opacity', 0.6)
+          .attr('stroke-width', 3)
+          .attr('stroke-opacity', 0.75)
+          .attr('stroke-dasharray', '6,3')
       })
 
       JOINTS.forEach(joint => {
         const pos = project(comparisonFrame.joints[joint.id])
+        
         compG.append('circle')
           .attr('cx', pos.x)
           .attr('cy', pos.y)
-          .attr('r', 4)
+          .attr('r', 7)
           .attr('fill', comparisonColor)
-          .attr('opacity', 0.6)
+          .attr('fill-opacity', 0.8)
+          .attr('stroke', comparisonColor)
+          .attr('stroke-width', 2)
+          .attr('stroke-opacity', 1)
       })
     }
 
